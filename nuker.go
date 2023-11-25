@@ -10,6 +10,7 @@ import (
     "net/http"
     "net/url"
     "os"
+    "os/exec"
     "strconv"
     "strings"
     "sync"
@@ -23,8 +24,15 @@ func getProxy() string {
     return proxies[rand.Intn(len(proxies))]
 }
 
-// spam sends messages to a webhook, retrying on failure
-func spam(webhook string, msg string, sleep time.Duration, wg *sync.WaitGroup) {
+// setTitle sets the title of the console window
+func setTitle(title string) {
+    cmd := exec.Command("cmd", "/c", "title "+title)
+    cmd.Stdout = os.Stdout
+    cmd.Run()
+}
+
+// spam sends messages to a webhook, retrying on failure. It also prints the number of successes, failures, and errors.
+func spam(webhook string, msg string, sleep time.Duration, wg *sync.WaitGroup, success *int, fail *int, errors *int) {
     defer wg.Done()
     for {
         proxy := getProxy()
@@ -51,11 +59,16 @@ func spam(webhook string, msg string, sleep time.Duration, wg *sync.WaitGroup) {
             time.Sleep(time.Second * time.Duration(i+1))
         }
         if err != nil {
-            fmt.Println("Error:", err)
-            fmt.Println("\033[31mBad webhook or proxy, retrying...\033[0m")
+            *errors++
+			fmt.Println("\033[31mError | " + err.Error() + "\033[0m")
         } else if resp.StatusCode == 204 {
-            fmt.Println("\033[32mSent Message \033[0m")
+            *success++
+			fmt.Println("\033[32mSent Message | " + resp.Status + "\033[0m")
+        } else {
+            *fail++
+			fmt.Println("\033[31mFailed To Send Message | " + resp.Status + "\033[0m")
         }
+        setTitle(fmt.Sprintf("Success: %d, Fail: %d, Errors: %d", *success, *fail, *errors))
         time.Sleep(sleep)
     }
 }
@@ -91,9 +104,10 @@ func main() {
 	sleep, _ := strconv.Atoi(strings.TrimSpace(sleepStr))
 	fmt.Println("\033[31mStarting...\033[0m")
 	var wg sync.WaitGroup
-	for i := 0; i < threads; i++ {
-		wg.Add(1)
-		go spam(strings.TrimSpace(webhook), strings.TrimSpace(msg), time.Duration(sleep)*time.Second, &wg)
-	}
-	wg.Wait()
+	success, fail, errors := 0, 0, 0
+    for i := 0; i < threads; i++ {
+        wg.Add(1)
+        go spam(strings.TrimSpace(webhook), strings.TrimSpace(msg), time.Duration(sleep)*time.Second, &wg, &success, &fail, &errors)
+    }
+    wg.Wait()
 }
