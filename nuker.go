@@ -92,9 +92,18 @@ func main() {
     ╚═══════════════════════════════════════════════╝
     ` + "\033[0m")
     reader := bufio.NewReader(os.Stdin)
-	fmt.Print("\033[31mPlease Insert webhook URL: \033[0m")
-	webhook, _ := reader.ReadString('\n')
-	fmt.Print("\033[31mPlease Insert webhook Spam Message: \033[0m")
+    fmt.Print("\033[31mPlease Insert webhook URLs (one per line, press enter when done): \033[0m")
+    var webhooks []string
+    for {
+        webhook, _ := reader.ReadString('\n')
+        webhook = strings.TrimSpace(webhook)
+        if webhook == "" {
+            break
+        }
+        webhooks = append(webhooks, webhook)
+    }
+	fmt.println("\033[31mPlease Insert Webhook URL: \033[0m")
+	fmt.Print("\033[31mPlease Insert Message: \033[0m")
 	msg, _ := reader.ReadString('\n')
 	fmt.Print("\033[31mPlease Insert Threads (It's Recommended To Use 10): \033[0m")
 	threadsStr, _ := reader.ReadString('\n')
@@ -106,8 +115,10 @@ func main() {
 	var wg sync.WaitGroup
 	success, fail, errors := 0, 0, 0
     for i := 0; i < threads; i++ {
-        wg.Add(1)
-        go spam(strings.TrimSpace(webhook), strings.TrimSpace(msg), time.Duration(sleep)*time.Second, &wg, &success, &fail, &errors)
+        for _, webhook := range webhooks {
+            wg.Add(1)
+            go spam(webhook, strings.TrimSpace(msg), time.Duration(sleep)*time.Second, &wg, &success, &fail, &errors)
+        }
     }
     wg.Wait()
 }
