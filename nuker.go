@@ -102,7 +102,6 @@ func main() {
         }
         webhooks = append(webhooks, webhook)
     }
-	fmt.println("\033[31mPlease Insert Webhook URL: \033[0m")
 	fmt.Print("\033[31mPlease Insert Message: \033[0m")
 	msg, _ := reader.ReadString('\n')
 	fmt.Print("\033[31mPlease Insert Threads (It's Recommended To Use 10): \033[0m")
