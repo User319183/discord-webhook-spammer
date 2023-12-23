@@ -85,24 +85,24 @@ func spam(webhook string, msg string, tts bool, username string, avatarURL strin
 
 // main function to run the spam function with user inputs
 func main() {
-    fmt.Println("\033[31m" + `
-    /$$   /$$                               /$$$$$$    /$$    /$$$$$$    /$$    /$$$$$$   /$$$$$$ 
-    | $$  | $$                              /$$__  $$ /$$$$   /$$__  $$ /$$$$   /$$__  $$ /$$__  $$
-    | $$  | $$  /$$$$$$$  /$$$$$$   /$$$$$$|__/  \ $$|_  $$  | $$  \ $$|_  $$  | $$  \ $$|__/  \ $$
-    | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$  /$$$$$/  | $$  |  $$$$$$$  | $$  |  $$$$$$/   /$$$$$/
-    | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/ |___  $$  | $$   \____  $$  | $$   >$$__  $$  |___  $$
-    | $$  | $$ \____  $$| $$_____/| $$      /$$  \ $$  | $$   /$$  \ $$  | $$  | $$  \ $$ /$$  \ $$
-    |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$     |  $$$$$$/ /$$$$$$|  $$$$$$/ /$$$$$$|  $$$$$$/|  $$$$$$/
-    \______/ |_______/  \_______/|__/      \______/ |______/ \______/ |______/ \______/  \______/ 
-                                                                                                
-                                                                                                
+    // Clear the screen
+    cmd := exec.Command("cmd", "/c", "cls")
+    cmd.Stdout = os.Stdout
+    cmd.Run()
+    
+    fmt.Println("\x1b[38;5;201m" + `
+
+    ╦ ╦┌─┐┌─┐┬─┐
+    ║ ║└─┐├┤ ├┬┘
+    ╚═╝└─┘└─┘┴└─
+                                                                                
     ╔═══════════════════════════════════════════════╗
     ║ User319183 | discord.gg/KHJjX3y2B4            ║
     ║ The fastest Discord Webhook Spammer           ║
     ╚═══════════════════════════════════════════════╝
-    ` + "\033[0m")
+    ` + "\x1b[38;5;201m")
     reader := bufio.NewReader(os.Stdin)
-    fmt.Print("\033[31mPlease Insert webhook URLs (one per line, press enter when done): \033[0m")
+    fmt.Print("\x1b[38;5;201mPlease Insert webhook URLs (one per line, press enter when done): \x1b[38;5;201m")
     var webhooks []string
     for {
         webhook, _ := reader.ReadString('\n')
@@ -113,27 +113,27 @@ func main() {
         webhooks = append(webhooks, webhook)
     }
 
-    fmt.Print("\033[31mPlease Insert Custom Username (press enter to skip): \033[0m")
+    fmt.Print("\x1b[38;5;201mPlease Insert Custom Username (press enter to skip): \x1b[38;5;201m")
     username, _ := reader.ReadString('\n')
     username = strings.TrimSpace(username)
 
-    fmt.Print("\033[31mPlease Insert Avatar URL (press enter to skip): \033[0m")
+    fmt.Print("\x1b[38;5;201mPlease Insert Avatar URL (press enter to skip): \x1b[38;5;201m")
     avatarURL, _ := reader.ReadString('\n')
     avatarURL = strings.TrimSpace(avatarURL)
     
-    fmt.Print("\033[31mPlease Insert Message: \033[0m")
+    fmt.Print("\x1b[38;5;201mPlease Insert Message: \x1b[38;5;201m")
     msg, _ := reader.ReadString('\n')
 
-    fmt.Print("\033[31mDo you want to send TTS messages? (yes/no): \033[0m")
+    fmt.Print("\x1b[38;5;201mDo you want to send TTS messages? (yes/no): \x1b[38;5;201m")
     ttsStr, _ := reader.ReadString('\n')
     tts := strings.TrimSpace(ttsStr) == "yes"
-    fmt.Print("\033[31mPlease Insert Threads (It's Recommended To Use 1): \033[0m")
+    fmt.Print("\x1b[38;5;201mPlease Insert Threads (It's Recommended To Use 100): \x1b[38;5;201m")
     threadsStr, _ := reader.ReadString('\n')
     threads, _ := strconv.Atoi(strings.TrimSpace(threadsStr))
-    fmt.Print("\033[31mPlease Insert Sleep in seconds (It's Recommended To Use 1.2): \033[0m")
+    fmt.Print("\x1b[38;5;201mPlease Insert Sleep in seconds (It's Recommended To Use 10): \x1b[38;5;201m")
     sleepStr, _ := reader.ReadString('\n')
     sleep, _ := strconv.Atoi(strings.TrimSpace(sleepStr))
-    fmt.Println("\033[31mStarting...\033[0m")
+    fmt.Println("\x1b[38;5;201mStarting...\x1b[38;5;201m")
     startTime = time.Now()
     var wg sync.WaitGroup
     success, fail, errors := 0, 0, 0
